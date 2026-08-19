@@ -5,11 +5,11 @@ import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 
 const pillars = [
-  { key: "social", color: 0xd9ef67, position: [-2.05, .25, .35] },
-  { key: "emocional", color: 0xffffff, position: [1.55, 1.35, -.2] },
-  { key: "afetiva", color: 0xffbd9c, position: [-.8, 2.0, -.45] },
-  { key: "cognitiva", color: 0xf4df83, position: [2.05, -.5, .2] },
-  { key: "motora", color: 0x8ee0d3, position: [-.65, -1.9, -.15] },
+  { key: "social", color: 0xd65b2d, position: [-2.05, .25, .35] },
+  { key: "emocional", color: 0xf7f4ea, position: [1.55, 1.35, -.2] },
+  { key: "afetiva", color: 0xf08a5d, position: [-.8, 2.0, -.45] },
+  { key: "cognitiva", color: 0x7385cc, position: [2.05, -.5, .2] },
+  { key: "motora", color: 0xffffff, position: [-.65, -1.9, -.15] },
 ] as const;
 
 const vertexShader = `
@@ -86,12 +86,30 @@ export default function EthicaScene() {
 
     const halo = new THREE.Mesh(
       new THREE.TorusGeometry(2.55, .012, 8, 220),
-      new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .28 })
+      new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .2 })
     );
     halo.rotation.set(1.06, .12, -.28);
     group.add(halo);
 
+    // Open arcs echo the gesture of the blue-and-orange school mark without
+    // literally redrawing it, turning the central learner into a brand cue.
+    const brandArc = new THREE.Mesh(
+      new THREE.TorusGeometry(1.62, .055, 10, 120, Math.PI * 1.52),
+      new THREE.MeshStandardMaterial({ color: 0xd65b2d, roughness: .35, metalness: .02 })
+    );
+    brandArc.rotation.set(.42, -.2, .62);
+    group.add(brandArc);
+    const brandArcSmall = new THREE.Mesh(
+      new THREE.TorusGeometry(1.43, .022, 8, 100, Math.PI * 1.2),
+      new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .62 })
+    );
+    brandArcSmall.rotation.set(-.5, .18, -2.15);
+    group.add(brandArcSmall);
+
     const moduleMeshes: THREE.Mesh[] = [];
+    const connectionMeshes: THREE.Mesh[] = [];
+    const signalMeshes: THREE.Mesh[] = [];
+    const connectionCurves: THREE.QuadraticBezierCurve3[] = [];
     pillars.forEach((pillar, index) => {
       const geometry = new RoundedBoxGeometry(1.25, .52, .42, 5, .15);
       const material = new THREE.MeshStandardMaterial({ color: pillar.color, roughness: .3, metalness: .04 });
@@ -101,6 +119,27 @@ export default function EthicaScene() {
       mesh.userData = { key: pillar.key, basePosition: mesh.position.clone(), index };
       moduleMeshes.push(mesh);
       group.add(mesh);
+
+      const end = new THREE.Vector3(...pillar.position).multiplyScalar(.78);
+      const control = end.clone().multiplyScalar(.56);
+      control.z += index % 2 === 0 ? .48 : -.38;
+      const curve = new THREE.QuadraticBezierCurve3(new THREE.Vector3(), control, end);
+      connectionCurves.push(curve);
+      const connection = new THREE.Mesh(
+        new THREE.TubeGeometry(curve, 36, .018, 7, false),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .2 })
+      );
+      connection.userData = { key: pillar.key };
+      connectionMeshes.push(connection);
+      group.add(connection);
+
+      const signal = new THREE.Mesh(
+        new THREE.SphereGeometry(.065, 18, 18),
+        new THREE.MeshBasicMaterial({ color: 0xd65b2d })
+      );
+      signal.userData = { key: pillar.key, index };
+      signalMeshes.push(signal);
+      group.add(signal);
 
       const joint = new THREE.Mesh(
         new THREE.TorusGeometry(.15, .045, 12, 40),
@@ -173,7 +212,22 @@ export default function EthicaScene() {
         const base = mesh.userData.basePosition as THREE.Vector3;
         mesh.position.y = base.y + (reduceMotion ? 0 : Math.sin(t * .9 + index) * .055);
       });
+      connectionMeshes.forEach(connection => {
+        const selected = connection.userData.key === active;
+        const material = connection.material as THREE.MeshBasicMaterial;
+        material.opacity += ((selected ? .85 : .16) - material.opacity) * .08;
+        material.color.lerp(new THREE.Color(selected ? 0xd65b2d : 0xffffff), .08);
+      });
+      signalMeshes.forEach((signal, index) => {
+        const selected = signal.userData.key === active;
+        const travel = reduceMotion ? .72 : (t * (selected ? .32 : .12) + index * .19) % 1;
+        signal.position.copy(connectionCurves[index].getPoint(travel));
+        const signalScale = selected ? 1.5 : .72;
+        signal.scale.lerp(new THREE.Vector3(signalScale, signalScale, signalScale), .08);
+      });
       halo.rotation.z += reduceMotion ? 0 : .0012;
+      brandArc.rotation.z += reduceMotion ? 0 : .0016;
+      brandArcSmall.rotation.z -= reduceMotion ? 0 : .0011;
       camera.position.x += (pointer.x * .22 - camera.position.x) * .025;
       camera.position.y += (pointer.y * .15 - camera.position.y) * .025;
       camera.lookAt(0, 0, 0);
@@ -189,9 +243,16 @@ export default function EthicaScene() {
       removeEventListener("etica-pillar", onPillar);
       renderer.domElement.removeEventListener("pointermove", onPointerMove);
       renderer.domElement.removeEventListener("pointerdown", onPointerDown);
-      coreGeometry.dispose(); coreMaterial.dispose();
-      halo.geometry.dispose(); (halo.material as THREE.Material).dispose();
-      moduleMeshes.forEach(mesh => { mesh.geometry.dispose(); (mesh.material as THREE.Material).dispose(); });
+      const geometries = new Set<THREE.BufferGeometry>();
+      const materials = new Set<THREE.Material>();
+      scene.traverse(object => {
+        if (!(object instanceof THREE.Mesh)) return;
+        geometries.add(object.geometry);
+        const objectMaterials = Array.isArray(object.material) ? object.material : [object.material];
+        objectMaterials.forEach(material => materials.add(material));
+      });
+      geometries.forEach(geometry => geometry.dispose());
+      materials.forEach(material => material.dispose());
       renderer.dispose(); renderer.domElement.remove();
     };
   }, []);

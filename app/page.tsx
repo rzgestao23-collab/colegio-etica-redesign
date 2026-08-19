@@ -93,12 +93,15 @@ export default function Home() {
 
         <div className="hero-stage" aria-label="Escultura tridimensional interativa sobre formação integral">
           <div className="stage-grid" />
+          <div className="stage-principles" aria-hidden="true">
+            <span>protagonismo</span><span>diálogo</span><span>descoberta</span>
+          </div>
           <EthicaScene />
           <div className="scene-reticle"><i /><i /><i /><i /></div>
           <div className="pillar-dots" role="group" aria-label="Dimensões da formação integral">
             {pillars.map(pillar => <button type="button" key={pillar.key} onClick={() => choosePillar(pillar.key)} className={activePillar === pillar.key ? "active" : ""} aria-label={`Selecionar dimensão ${pillar.label}`}><span />{pillar.label}</button>)}
           </div>
-          <p className="stage-caption"><span>01</span> Toque nos módulos e descubra</p>
+          <p className="stage-caption"><span>01</span> Cada conexão transforma o todo</p>
         </div>
 
         <div className="hero-bottom" id="segmentos-atalho">
@@ -148,7 +151,7 @@ export default function Home() {
           {segments.map((segment, index) => (
             <article className={`segment-card ${segment.skin} reveal-on-scroll`} id={index === 0 ? "infantil" : index === 1 ? "fundamental1" : "fundamental2"} key={segment.title}>
               <div className="segment-top"><span>{segment.number}</span><p>{segment.tag}</p><i>↗</i></div>
-              <div className="segment-art"><i /><i /><i /><b /></div>
+              <div className={`segment-art segment-art-${index + 1}`}><i /><i /><i /><b /></div>
               <div><small>{segment.age}</small><h3>{segment.title}</h3><p>{segment.text}</p></div>
               <a href="https://colegioeticasaocarlos.com.br/contato">Conhecer o segmento <span>→</span></a>
             </article>
@@ -165,9 +168,10 @@ export default function Home() {
         </div>
         <div className="method-system reveal-on-scroll" aria-label="Aluno, escola e família conectados">
           <div className="system-grid" />
-          <div className="system-orbit orbit-a"><span>ESCOLA</span></div>
-          <div className="system-orbit orbit-b"><span>FAMÍLIA</span></div>
-          <div className="system-orbit orbit-c"><span>COMUNIDADE</span></div>
+          <div className="system-orbit orbit-a"><span>ESCOLA</span><i /></div>
+          <div className="system-orbit orbit-b"><span>FAMÍLIA</span><i /></div>
+          <div className="system-orbit orbit-c"><span>COMUNIDADE</span><i /></div>
+          <div className="system-pulses" aria-hidden="true"><i /><i /><i /></div>
           <div className="system-core"><small>no centro</small><strong>ALUNO</strong></div>
         </div>
       </section>
@@ -186,6 +190,7 @@ export default function Home() {
           <div className="court"><span>Quadra</span></div>
           <div className="pool"><span>Piscina</span></div>
           <div className="tree tree-a" /><div className="tree tree-b" /><div className="tree tree-c" />
+          <div className="campus-route" aria-hidden="true"><i /><i /><i /><i /></div>
           <p>Mapa conceitual · visite para conhecer</p>
         </div>
       </section>
