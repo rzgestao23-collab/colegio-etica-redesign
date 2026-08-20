@@ -65,6 +65,17 @@ export default function Home() {
       const available = document.documentElement.scrollHeight - innerHeight;
       const progress = available > 0 ? scrollY / available : 0;
       root.style.setProperty("--page-progress", `${Math.min(1, Math.max(0, progress))}`);
+
+      const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-pillar-index]"));
+      if (cards.length) {
+        const focusLine = innerHeight * 0.5;
+        const closest = cards.reduce((best, card, index) => {
+          const rect = card.getBoundingClientRect();
+          const distance = Math.abs(rect.top + rect.height / 2 - focusLine);
+          return distance < best.distance ? { index, distance } : best;
+        }, { index: 0, distance: Number.POSITIVE_INFINITY });
+        setActivePillar((current) => current === closest.index ? current : closest.index);
+      }
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(updateProgress);
@@ -80,15 +91,7 @@ export default function Home() {
       });
     }, { rootMargin: "0px 0px -12%", threshold: 0.12 });
 
-    const pillarObserver = new IntersectionObserver((entries) => {
-      const visible = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (visible) setActivePillar(Number((visible.target as HTMLElement).dataset.pillarIndex || 0));
-    }, { rootMargin: "-24% 0px -38%", threshold: [0.2, 0.5, 0.8] });
-
     reveals.forEach((element) => reducedMotion ? element.classList.add("is-visible") : revealObserver.observe(element));
-    document.querySelectorAll<HTMLElement>("[data-pillar-index]").forEach((element) => pillarObserver.observe(element));
     root.classList.add("motion-ready");
     updateProgress();
     addEventListener("scroll", onScroll, { passive: true });
@@ -99,7 +102,6 @@ export default function Home() {
       removeEventListener("scroll", onScroll);
       if (frame) cancelAnimationFrame(frame);
       revealObserver.disconnect();
-      pillarObserver.disconnect();
     };
   }, []);
 
@@ -172,6 +174,7 @@ export default function Home() {
           </div>
           <div className="pillar-stack">{pillars.map((pillar, index) => <article className={`pillar-card${activePillar === index ? " is-active" : ""}`} data-pillar-index={index} data-reveal key={pillar.number}><span>{pillar.number}</span><h3>{pillar.title}</h3><p>{pillar.text}</p><i aria-hidden="true">{index === 0 ? "◎" : index === 1 ? "◇" : index === 2 ? "♡" : index === 3 ? "✦" : "↗"}</i></article>)}</div>
         </div>
+        <a className="proposal-exit" href="#ensino"><span>Próximo capítulo</span><strong>Conheça as etapas de ensino</strong><i aria-hidden="true">↓</i></a>
       </div></section>
 
       <section className="learning" id="ensino">
