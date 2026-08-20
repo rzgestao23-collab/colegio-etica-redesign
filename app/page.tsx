@@ -41,6 +41,7 @@ const units = [
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activePillar, setActivePillar] = useState(0);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -54,12 +55,61 @@ export default function Home() {
     };
   }, [menuOpen]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let frame = 0;
+
+    const updateProgress = () => {
+      frame = 0;
+      const available = document.documentElement.scrollHeight - innerHeight;
+      const progress = available > 0 ? scrollY / available : 0;
+      root.style.setProperty("--page-progress", `${Math.min(1, Math.max(0, progress))}`);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(updateProgress);
+    };
+
+    const reveals = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          (entry.target as HTMLElement).classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: "0px 0px -12%", threshold: 0.12 });
+
+    const pillarObserver = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible) setActivePillar(Number((visible.target as HTMLElement).dataset.pillarIndex || 0));
+    }, { rootMargin: "-24% 0px -38%", threshold: [0.2, 0.5, 0.8] });
+
+    reveals.forEach((element) => reducedMotion ? element.classList.add("is-visible") : revealObserver.observe(element));
+    document.querySelectorAll<HTMLElement>("[data-pillar-index]").forEach((element) => pillarObserver.observe(element));
+    root.classList.add("motion-ready");
+    updateProgress();
+    addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      root.classList.remove("motion-ready");
+      root.style.removeProperty("--page-progress");
+      removeEventListener("scroll", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+      revealObserver.disconnect();
+      pillarObserver.disconnect();
+    };
+  }, []);
+
   const closeMenu = () => setMenuOpen(false);
 
   return (
     <main>
       <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
       <div className="announcement"><span>Matrículas 2027 abertas</span><a href="#matriculas">Agende uma visita <b aria-hidden="true">↗</b></a></div>
+      <div className="scroll-progress" aria-hidden="true"><i /></div>
 
       <header className="topbar">
         <a href="#inicio" className="brand" aria-label="Colégio Ética São Carlos — início"><img src="/etica-institucional.png" alt="Colégio Ética São Carlos" /></a>
@@ -74,7 +124,7 @@ export default function Home() {
       </nav>}
 
       <section className="hero" id="inicio">
-        <div className="hero-copy" id="conteudo">
+        <div className="hero-copy" id="conteudo" data-reveal>
           <p className="eyebrow"><i /> Educação Infantil e Ensino Fundamental</p>
           <h1>Conhecimento<br />que <em>conecta.</em></h1>
           <h2>Valores que transformam.</h2>
@@ -83,6 +133,11 @@ export default function Home() {
         </div>
         <div className="hero-media">
           <img src="/hero-etica.jpg" alt="Alunos do Colégio Ética correndo juntos em um momento de convivência" />
+          <div className="hero-objects" aria-hidden="true">
+            <div className="book-object"><span className="book-cover">É</span><span className="book-pages" /></div>
+            <span className="object-sphere">?</span>
+            <span className="object-cube">+</span>
+          </div>
           <div className="hero-stamp"><strong>1999</strong><span>educação que cresce junto</span></div>
           <p className="hero-caption">A escola acontece quando cada criança participa.</p>
         </div>
@@ -91,37 +146,53 @@ export default function Home() {
 
       <section className="welcome section-shell" id="colegio">
         <div className="section-kicker"><span>01</span><p>O Colégio</p></div>
-        <div className="welcome-heading"><h2>Uma escola que conhece cada aluno pelo <em>nome.</em></h2><p>O Ética nasceu para formar pessoas autônomas, criativas e responsáveis. Aqui, aprender é uma experiência compartilhada entre estudantes, educadores e famílias.</p></div>
-        <div className="welcome-grid">
+        <div className="welcome-heading" data-reveal><h2>Uma escola que conhece cada aluno pelo <em>nome.</em></h2><p>O Ética nasceu para formar pessoas autônomas, criativas e responsáveis. Aqui, aprender é uma experiência compartilhada entre estudantes, educadores e famílias.</p></div>
+        <div className="welcome-grid" data-reveal>
           <figure className="welcome-photo"><img src="/professora-aluna.jpg" alt="Professora acompanha uma aluna em atividade na sala de aula" loading="lazy" /><figcaption>Presença, escuta e cuidado no dia a dia.</figcaption></figure>
           <div className="welcome-manifesto"><blockquote>“Ensinar também é estar perto, perceber e criar espaço para cada descoberta.”</blockquote><div className="welcome-facts"><span><strong>1999</strong> ano de fundação</span><span><strong>2</strong> unidades em São Carlos</span><span><strong>1</strong> percurso de formação integral</span></div></div>
         </div>
       </section>
 
+      <div className="values-ribbon" aria-label="Valores do Colégio Ética">
+        <div><span>Curiosidade</span><i>●</i><span>Autonomia</span><i>●</i><span>Afeto</span><i>●</i><span>Conhecimento</span><i>●</i><span>Convivência</span><i>●</i><span>Curiosidade</span><i>●</i><span>Autonomia</span><i>●</i><span>Afeto</span><i>●</i><span>Conhecimento</span><i>●</i><span>Convivência</span><i>●</i></div>
+      </div>
+
       <section className="proposal" id="proposta"><div className="section-shell">
         <div className="section-kicker light"><span>02</span><p>Nossa proposta</p></div>
-        <div className="proposal-heading"><h2>Cinco dimensões.<br /><em>Uma pessoa inteira.</em></h2><p>Nossa proposta sociointeracionista coloca o aluno no centro da construção do conhecimento, respeitando diferenças e incentivando potencialidades.</p></div>
-        <div className="pillar-grid">{pillars.map((pillar) => <article className="pillar-card" key={pillar.number}><span>{pillar.number}</span><h3>{pillar.title}</h3><p>{pillar.text}</p></article>)}</div>
+        <div className="proposal-heading" data-reveal><h2>Cinco dimensões.<br /><em>Uma pessoa inteira.</em></h2><p>Nossa proposta sociointeracionista coloca o aluno no centro da construção do conhecimento, respeitando diferenças e incentivando potencialidades.</p></div>
+        <div className="proposal-story">
+          <div className="dimension-stage" aria-hidden="true">
+            <div className={`dimension-sculpture active-${activePillar + 1}`}>
+              <span className="dimension-ring ring-one" />
+              <span className="dimension-ring ring-two" />
+              <span className="dimension-core"><b>Ética</b><small>formação integral</small></span>
+              {pillars.map((pillar, index) => <span className={`dimension-node node-${index + 1}${activePillar === index ? " is-active" : ""}`} key={pillar.number}>{pillar.number}</span>)}
+            </div>
+            <p><span>Role para explorar</span><i>↓</i></p>
+          </div>
+          <div className="pillar-stack">{pillars.map((pillar, index) => <article className={`pillar-card${activePillar === index ? " is-active" : ""}`} data-pillar-index={index} data-reveal key={pillar.number}><span>{pillar.number}</span><h3>{pillar.title}</h3><p>{pillar.text}</p><i aria-hidden="true">{index === 0 ? "◎" : index === 1 ? "◇" : index === 2 ? "♡" : index === 3 ? "✦" : "↗"}</i></article>)}</div>
+        </div>
       </div></section>
 
       <section className="learning" id="ensino">
         <div className="learning-photo"><img src="/aprender-fazendo.jpg" alt="Educadora acompanha um aluno em uma atividade pedagógica" loading="lazy" /><span>Aprender fazendo</span></div>
-        <div className="learning-copy"><div className="section-kicker"><span>03</span><p>Ensino</p></div><h2>Cada fase tem seu próprio ritmo.</h2><p className="learning-intro">Da primeira descoberta às escolhas mais conscientes, o percurso acompanha novas perguntas, habilidades e formas de estar no mundo.</p><div className="stage-list">{stages.map((stage, index) => <article key={stage.label}><span>0{index + 1}</span><div><h3>{stage.label}</h3><p>{stage.detail}</p></div></article>)}</div></div>
+        <div className="learning-copy" data-reveal><div className="section-kicker"><span>03</span><p>Ensino</p></div><h2>Cada fase tem seu próprio ritmo.</h2><p className="learning-intro">Da primeira descoberta às escolhas mais conscientes, o percurso acompanha novas perguntas, habilidades e formas de estar no mundo.</p><div className="stage-list">{stages.map((stage, index) => <article key={stage.label}><span>0{index + 1}</span><div><h3>{stage.label}</h3><p>{stage.detail}</p></div></article>)}</div></div>
       </section>
 
       <section className="units section-shell" id="unidades">
         <div className="section-kicker"><span>04</span><p>Nossas unidades</p></div>
-        <div className="units-heading"><h2>Dois espaços.<br /><em>O mesmo cuidado.</em></h2><p>Ambientes pensados para acolher cada etapa, sempre perto das famílias de São Carlos.</p></div>
-        <div className="unit-grid">{units.map((unit) => <article className="unit-card" key={unit.title}><div className="unit-image"><img src={unit.image} alt={unit.alt} loading="lazy" /></div><div className="unit-content"><span>{unit.label}</span><h3>{unit.title}</h3><address>{unit.address}<br />{unit.district}</address><a href={`https://wa.me/${unit.phoneHref}`} aria-label={`Falar com a unidade de ${unit.title} pelo WhatsApp`}>WhatsApp {unit.phone} <b aria-hidden="true">↗</b></a></div></article>)}</div>
+        <div className="units-heading" data-reveal><h2>Dois espaços.<br /><em>O mesmo cuidado.</em></h2><p>Ambientes pensados para acolher cada etapa, sempre perto das famílias de São Carlos.</p></div>
+        <div className="unit-grid">{units.map((unit) => <article className="unit-card" data-reveal key={unit.title}><div className="unit-image"><img src={unit.image} alt={unit.alt} loading="lazy" /></div><div className="unit-content"><span>{unit.label}</span><h3>{unit.title}</h3><address>{unit.address}<br />{unit.district}</address><a href={`https://wa.me/${unit.phoneHref}`} aria-label={`Falar com a unidade de ${unit.title} pelo WhatsApp`}>WhatsApp {unit.phone} <b aria-hidden="true">↗</b></a></div></article>)}</div>
       </section>
 
       <section className="life" id="vivencias">
-        <div className="section-shell life-heading"><div className="section-kicker light"><span>05</span><p>Vida no Ética</p></div><h2>A escola é feita de <em>gente.</em></h2><p>Relações verdadeiras, experiências significativas e alegria para aprender todos os dias.</p></div>
+        <div className="section-shell life-heading" data-reveal><div className="section-kicker light"><span>05</span><p>Vida no Ética</p></div><h2>A escola é feita de <em>gente.</em></h2><p>Relações verdadeiras, experiências significativas e alegria para aprender todos os dias.</p></div>
         <div className="photo-grid"><figure className="photo-large"><img src="/alunos-em-movimento.jpg" alt="Grupo de alunos do Colégio Ética em movimento" loading="lazy" /><figcaption>Convivência</figcaption></figure><figure><img src="/professor-aluno.jpg" alt="Professor conversa com aluno durante atividade" loading="lazy" /><figcaption>Vínculo</figcaption></figure><figure><img src="/professora-aluna.jpg" alt="Professora orienta aluna em atividade de sala" loading="lazy" /><figcaption>Aprendizagem</figcaption></figure></div>
       </section>
 
       <section className="enrollment" id="matriculas">
-        <div className="enrollment-copy"><div className="section-kicker light"><span>06</span><p>Matrículas 2027</p></div><h2>Venha sentir o Ética <em>de perto.</em></h2><p>Converse com nossa equipe, conheça os espaços e encontre o percurso que faz sentido para sua família.</p></div>
+        <div className="enrollment-objects" aria-hidden="true"><span className="enroll-orbit" /><span className="enroll-pencil">✎</span><span className="enroll-star">✦</span></div>
+        <div className="enrollment-copy" data-reveal><div className="section-kicker light"><span>06</span><p>Matrículas 2027</p></div><h2>Venha sentir o Ética <em>de perto.</em></h2><p>Converse com nossa equipe, conheça os espaços e encontre o percurso que faz sentido para sua família.</p></div>
         <div className="enrollment-actions"><a className="enrollment-choice light-choice" href="https://wa.me/5516997117269"><small>Educação Infantil</small><strong>Agendar uma visita</strong><span aria-hidden="true">↗</span></a><a className="enrollment-choice" href="https://wa.me/5516997615482"><small>Ensino Fundamental</small><strong>Agendar uma visita</strong><span aria-hidden="true">↗</span></a></div>
       </section>
 
