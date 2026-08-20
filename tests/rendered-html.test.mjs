@@ -37,8 +37,8 @@ test("server-renders the Colégio Ética institutional page", async () => {
   assert.match(html, /Desde 1999/);
   assert.match(html, /Educação Infantil e Ensino Fundamental/);
   assert.match(html, /class="scroll-progress"/);
-  assert.match(html, /class="dimension-sculpture active-1"/);
-  assert.match(html, /Role para explorar/);
+  assert.match(html, /class="dimension-sculpture"/);
+  assert.match(html, /Cinco dimensões conectadas/);
   assert.match(html, /Conheça as etapas de ensino/);
   assert.match(html, /Av\. Dr\. Teixeira de Barros, 779/);
   assert.match(html, /16 99711-7269/);

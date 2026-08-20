@@ -41,7 +41,6 @@ const units = [
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activePillar, setActivePillar] = useState(0);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -66,16 +65,6 @@ export default function Home() {
       const progress = available > 0 ? scrollY / available : 0;
       root.style.setProperty("--page-progress", `${Math.min(1, Math.max(0, progress))}`);
 
-      const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-pillar-index]"));
-      if (cards.length) {
-        const focusLine = innerHeight * 0.5;
-        const closest = cards.reduce((best, card, index) => {
-          const rect = card.getBoundingClientRect();
-          const distance = Math.abs(rect.top + rect.height / 2 - focusLine);
-          return distance < best.distance ? { index, distance } : best;
-        }, { index: 0, distance: Number.POSITIVE_INFINITY });
-        setActivePillar((current) => current === closest.index ? current : closest.index);
-      }
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(updateProgress);
@@ -164,15 +153,15 @@ export default function Home() {
         <div className="proposal-heading" data-reveal><h2>Cinco dimensões.<br /><em>Uma pessoa inteira.</em></h2><p>Nossa proposta sociointeracionista coloca o aluno no centro da construção do conhecimento, respeitando diferenças e incentivando potencialidades.</p></div>
         <div className="proposal-story">
           <div className="dimension-stage" aria-hidden="true">
-            <div className={`dimension-sculpture active-${activePillar + 1}`}>
+            <div className="dimension-sculpture">
               <span className="dimension-ring ring-one" />
               <span className="dimension-ring ring-two" />
               <span className="dimension-core"><b>Ética</b><small>formação integral</small></span>
-              {pillars.map((pillar, index) => <span className={`dimension-node node-${index + 1}${activePillar === index ? " is-active" : ""}`} key={pillar.number}>{pillar.number}</span>)}
+              {pillars.map((pillar, index) => <span className={`dimension-node node-${index + 1}`} key={pillar.number}>{pillar.number}</span>)}
             </div>
-            <p><span>Role para explorar</span><i>↓</i></p>
+            <p><span>Cinco dimensões conectadas</span><i>✦</i></p>
           </div>
-          <div className="pillar-stack">{pillars.map((pillar, index) => <article className={`pillar-card${activePillar === index ? " is-active" : ""}`} data-pillar-index={index} data-reveal key={pillar.number}><span>{pillar.number}</span><h3>{pillar.title}</h3><p>{pillar.text}</p><i aria-hidden="true">{index === 0 ? "◎" : index === 1 ? "◇" : index === 2 ? "♡" : index === 3 ? "✦" : "↗"}</i></article>)}</div>
+          <div className="pillar-stack">{pillars.map((pillar, index) => <article className="pillar-card" data-pillar-index={index} key={pillar.number}><span>{pillar.number}</span><h3>{pillar.title}</h3><p>{pillar.text}</p><i aria-hidden="true">{index === 0 ? "◎" : index === 1 ? "◇" : index === 2 ? "♡" : index === 3 ? "✦" : "↗"}</i></article>)}</div>
         </div>
         <a className="proposal-exit" href="#ensino"><span>Próximo capítulo</span><strong>Conheça as etapas de ensino</strong><i aria-hidden="true">↓</i></a>
       </div></section>
