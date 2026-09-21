@@ -36,6 +36,7 @@ test("server-renders the Colégio Ética institutional page", async () => {
   assert.match(html, /conecta\./);
   assert.doesNotMatch(html, /1999/);
   assert.doesNotMatch(html, /book-object/);
+  assert.doesNotMatch(html, /object-sphere/);
   assert.match(html, /Educação Infantil e Ensino Fundamental/);
   assert.match(html, /Colégio Ética São Carlos/);
   assert.match(html, /Galeria das unidades/);

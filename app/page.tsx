@@ -172,7 +172,6 @@ export default function Home() {
         <div className="hero-media">
           <img src="/hero-etica.jpg" alt="Alunos do Colégio Ética correndo juntos em um momento de convivência" />
           <div className="hero-objects" aria-hidden="true">
-            <span className="object-sphere">?</span>
             <span className="object-cube">+</span>
           </div>
           <div className="hero-stamp"><strong>São Carlos</strong><span>conhecimento que conecta</span></div>
