@@ -150,7 +150,7 @@ export default function Home() {
       <div className="scroll-progress" aria-hidden="true"><i /></div>
 
       <header className="topbar">
-        <a href="#inicio" className="brand" aria-label="Colégio Ética São Carlos — início"><span className="brand-lockup brand-lockup--header"><img src="/colegio-etica-sao-carlos.png" alt="Colégio Ética São Carlos" /></span></a>
+        <a href="#inicio" className="brand" aria-label="Colégio Ética São Carlos — início"><span className="brand-lockup brand-lockup--header"><img src="/colegio-etica-sao-carlos-logo.png" alt="Colégio Ética São Carlos" /></span></a>
         <nav aria-label="Navegação principal"><a href="#colegio">O Colégio</a><a href="#proposta">Nossa proposta</a><a href="#ensino">Ensino</a><a href="#unidades">Unidades</a><a href="#matriculas">Matrículas</a></nav>
         <a className="portal-link" href="#area-do-aluno"><span aria-hidden="true">●</span> Área do aluno</a>
         <button className="menu-button" type="button" aria-expanded={menuOpen} aria-label={menuOpen ? "Fechar menu" : "Abrir menu"} onClick={() => setMenuOpen(!menuOpen)}><i /><i /></button>
@@ -199,11 +199,11 @@ export default function Home() {
         <div className="formation-scroll" id="formacao-integral">
           <div className="formation-sticky">
             <div className="formation-video-frame">
-              <video ref={formationVideoRef} className="formation-video" muted playsInline preload="metadata" controls={prefersReducedMotion} aria-label="Animação das cinco dimensões da formação integral">
+              <video ref={formationVideoRef} className="formation-video" muted playsInline preload="auto" controls={prefersReducedMotion} aria-label="Animação das cinco dimensões da formação integral" aria-describedby="formation-video-guidance">
                 <source src="/formacao-integral.mp4" type="video/mp4" />
                 Seu navegador não suporta a animação em vídeo.
               </video>
-              <div className="formation-video-caption"><span>Formação integral</span><p>{prefersReducedMotion ? "A animação está disponível para reprodução manual." : "Role para acompanhar a animação."}</p></div>
+              <div className="formation-video-caption"><span>Formação integral</span><p id="formation-video-guidance">{prefersReducedMotion ? "A animação está disponível para reprodução manual." : "Role para acompanhar a animação."}</p></div>
               <div className="formation-progress" aria-hidden="true"><i /></div>
             </div>
           </div>
@@ -255,7 +255,7 @@ export default function Home() {
       </section>
 
       <footer>
-        <div className="footer-main"><div className="footer-brand"><span className="brand-lockup brand-lockup--footer"><img src="/colegio-etica-sao-carlos.png" alt="Colégio Ética São Carlos" /></span><p>Conhecimento que conecta.<br />Valores que transformam.</p></div><div><span>Educação Infantil</span><p>Av. Dr. Teixeira de Barros, 779<br />Vila Prado · São Carlos</p><a href="tel:+5516997117269">16 99711-7269</a></div><div><span>Ensino Fundamental</span><p>Av. José Pereira Lopes, 990<br />Vila Prado · São Carlos</p><a href="tel:+5516997615482">16 99761-5482</a></div><div><span>Acessos rápidos</span><a href="#area-do-aluno">Área do aluno ↓</a><a href="#infraestrutura">Galeria das unidades ↓</a><a href="https://login.plurall.net/login" target="_blank" rel="noreferrer">Plurall ↗</a><a href="mailto:secretaria@colegioeticasaocarlos.com.br">E-mail ↗</a></div></div>
+        <div className="footer-main"><div className="footer-brand"><span className="brand-lockup brand-lockup--footer"><img src="/colegio-etica-sao-carlos-logo.png" alt="Colégio Ética São Carlos" /></span><p>Conhecimento que conecta.<br />Valores que transformam.</p></div><div><span>Educação Infantil</span><p>Av. Dr. Teixeira de Barros, 779<br />Vila Prado · São Carlos</p><a href="tel:+5516997117269">16 99711-7269</a></div><div><span>Ensino Fundamental</span><p>Av. José Pereira Lopes, 990<br />Vila Prado · São Carlos</p><a href="tel:+5516997615482">16 99761-5482</a></div><div><span>Acessos rápidos</span><a href="#area-do-aluno">Área do aluno ↓</a><a href="#infraestrutura">Galeria das unidades ↓</a><a href="https://login.plurall.net/login" target="_blank" rel="noreferrer">Plurall ↗</a><a href="mailto:secretaria@colegioeticasaocarlos.com.br">E-mail ↗</a></div></div>
         <div className="footer-bottom"><p>© 2026 Colégio Ética São Carlos</p><div><a href="https://www.instagram.com/colegioetica_saocarlos/">Instagram</a><a href="https://pt-br.facebook.com/colegioeticasaocarlos/">Facebook</a><a href="https://www.youtube.com/channel/UC8YZPaEydi8tV9RbzqaU8jA">YouTube</a></div><a href="#inicio">Voltar ao topo ↑</a></div>
       </footer>
     </main>

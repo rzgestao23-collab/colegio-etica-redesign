@@ -38,3 +38,10 @@ yarn-error.log*
 /.wrangler/
 /outputs/
 /work/
+
+# Local hosting packages and visual-test artifacts
+/hostinger-dist/
+/hostinger-staging-dist/
+/output/
+/.playwright-cli/
+/hostinger-colégio-etica-teste*.zip

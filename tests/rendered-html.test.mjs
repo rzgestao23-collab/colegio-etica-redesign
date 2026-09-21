@@ -44,7 +44,10 @@ test("server-renders the Colégio Ética institutional page", async () => {
   assert.match(html, /Acessar o CPA/);
   assert.match(html, /class="scroll-progress"/);
   assert.match(html, /class="formation-video"/);
+  assert.match(html, /colegio-etica-sao-carlos-logo\.png/);
   assert.match(html, /formacao-integral\.mp4/);
+  assert.match(html, /preload="auto"/);
+  assert.match(html, /formation-video-guidance/);
   assert.match(html, /As cinco dimensões da formação integral/);
   assert.match(html, /Conheça as etapas de ensino/);
   assert.match(html, /Av\. Dr\. Teixeira de Barros, 779/);
@@ -58,6 +61,7 @@ test("keeps the institutional media required by the page", async () => {
   await Promise.all([
     "public/etica-institucional.png",
     "public/colegio-etica-sao-carlos.png",
+    "public/colegio-etica-sao-carlos-logo.png",
     "public/formacao-integral.mp4",
     "public/hero-etica.jpg",
     "public/unidade-infantil.jpg",
