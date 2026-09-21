@@ -34,11 +34,16 @@ test("server-renders the Colégio Ética institutional page", async () => {
   assert.match(html, /Conhecimento/);
   assert.match(html, /que/);
   assert.match(html, /conecta\./);
-  assert.match(html, /Desde 1999/);
+  assert.doesNotMatch(html, /1999/);
   assert.match(html, /Educação Infantil e Ensino Fundamental/);
+  assert.match(html, /Colégio Ética São Carlos/);
+  assert.match(html, /Galeria das unidades/);
+  assert.match(html, /Área do aluno/);
+  assert.match(html, /Acessar o CPA/);
   assert.match(html, /class="scroll-progress"/);
-  assert.match(html, /class="dimension-sculpture"/);
-  assert.match(html, /Cinco dimensões conectadas/);
+  assert.match(html, /class="formation-video"/);
+  assert.match(html, /formacao-integral\.mp4/);
+  assert.match(html, /As cinco dimensões da formação integral/);
   assert.match(html, /Conheça as etapas de ensino/);
   assert.match(html, /Av\. Dr\. Teixeira de Barros, 779/);
   assert.match(html, /16 99711-7269/);
@@ -50,6 +55,8 @@ test("server-renders the Colégio Ética institutional page", async () => {
 test("keeps the institutional media required by the page", async () => {
   await Promise.all([
     "public/etica-institucional.png",
+    "public/colegio-etica-sao-carlos.png",
+    "public/formacao-integral.mp4",
     "public/hero-etica.jpg",
     "public/unidade-infantil.jpg",
     "public/unidade-fundamental.jpg",

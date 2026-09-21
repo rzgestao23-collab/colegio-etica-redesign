@@ -12,12 +12,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol = incoming.get("x-forwarded-proto") || (host.includes("localhost") ? "http" : "https");
   const origin = `${protocol}://${host}`;
   const title = "Colégio Ética São Carlos — Conhecimento que conecta";
-  const description = "Desde 1999, Educação Infantil e Ensino Fundamental em São Carlos com acolhimento, valores e formação integral.";
+  const description = "Educação Infantil e Ensino Fundamental em São Carlos, com acolhimento, valores e formação integral.";
 
   return {
     metadataBase: new URL(origin), title, description, icons: { icon: "/favicon.svg" },
-    openGraph: { title, description, type: "website", url: origin, images: [{ url: `${origin}/og.png`, width: 1536, height: 1024, alt: "Colégio Ética — Conhecimento que conecta. Valores que transformam." }] },
-    twitter: { card: "summary_large_image", title, description, images: [`${origin}/og.png`] },
+    openGraph: { title, description, type: "website", url: origin, images: [{ url: `${origin}/colegio-etica-sao-carlos.png`, width: 1080, height: 1920, alt: "Marca Colégio Ética São Carlos." }] },
+    twitter: { card: "summary_large_image", title, description, images: [`${origin}/colegio-etica-sao-carlos.png`] },
   };
 }
 
