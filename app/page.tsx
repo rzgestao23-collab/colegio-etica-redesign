@@ -242,7 +242,7 @@ export default function Home() {
           <div className="student-heading" data-reveal><h2>Um acesso para cada <em>momento.</em></h2><p>Encontre o canal certo para acompanhar a rotina escolar, os serviços da família e a experiência pedagógica.</p></div>
           <div className="access-grid">
             <article className="access-card" data-reveal><span>01</span><small>Celular</small><h3>Aplicativo</h3><p>Use o aplicativo indicado pela sua unidade para acompanhar a rotina pelo celular.</p><a href="#unidades">Escolher minha unidade <b aria-hidden="true">↓</b></a></article>
-            <article className="access-card" data-reveal><span>02</span><small>Computador</small><h3>CPA</h3><p>Acesse os serviços escolares pelo navegador em um computador.</p><a href="https://colegioeticasaocarlos.com.br/aluno" target="_blank" rel="noreferrer">Acessar o CPA <b aria-hidden="true">↗</b></a></article>
+            <article className="access-card" data-reveal><span>02</span><small>Computador</small><h3>CPA</h3><p>Acesse os serviços escolares pelo navegador em um computador.</p><a href="https://colegioeticasaocarlos.com.br/aluno/" target="_blank" rel="noreferrer">Acessar o CPA <b aria-hidden="true">↗</b></a></article>
             <article className="access-card" data-reveal><span>03</span><small>Aprendizagem</small><h3>Plurall</h3><p>Entre no ambiente pedagógico para continuar a experiência de aprendizagem.</p><a href="https://login.plurall.net/login" target="_blank" rel="noreferrer">Acessar o Plurall <b aria-hidden="true">↗</b></a></article>
           </div>
         </div>
